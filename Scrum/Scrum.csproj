@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <UserSecretsId>aspnet-Scrum-6E811723-EED7-4367-B713-B4838F9930F8</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Data\Migrations\00000000000000_CreateIdentitySchema.cs" />
+    <Compile Remove="Data\Migrations\00000000000000_CreateIdentitySchema.Designer.cs" />
+    <Compile Remove="Data\Migrations\20190219225203_AddIdentityModels.cs" />
+    <Compile Remove="Data\Migrations\20190219225203_AddIdentityModels.Designer.cs" />
+    <Compile Remove="Migrations\20190219230335_Initial.cs" />
+    <Compile Remove="Migrations\20190219230335_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20190219234417_CustomizeIdentity.cs" />
+    <Compile Remove="Migrations\20190219234417_CustomizeIdentity.Designer.cs" />
+    <Compile Remove="Migrations\20190220164629_AddTeams.cs" />
+    <Compile Remove="Migrations\20190220164629_AddTeams.Designer.cs" />
+    <Compile Remove="Migrations\20190220170013_AddTeams.cs" />
+    <Compile Remove="Migrations\20190220170013_AddTeams.Designer.cs" />
+    <Compile Remove="Migrations\20190220171055_AddTeams.cs" />
+    <Compile Remove="Migrations\20190220171055_AddTeams.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.7" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\Identity\Services\" />
+    <Folder Include="Data\Migrations\" />
+  </ItemGroup>
+
+</Project>
