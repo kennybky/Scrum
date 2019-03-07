@@ -20,6 +20,8 @@
     <Compile Remove="Migrations\20190220170013_AddTeams.Designer.cs" />
     <Compile Remove="Migrations\20190220171055_AddTeams.cs" />
     <Compile Remove="Migrations\20190220171055_AddTeams.Designer.cs" />
+    <Compile Remove="Migrations\20190307001702_UpdateLatest.cs" />
+    <Compile Remove="Migrations\20190307001702_UpdateLatest.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

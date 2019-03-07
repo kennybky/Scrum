@@ -55,8 +55,8 @@ namespace Scrum.Data
             {
                 b.Property(i => i.Status).HasDefaultValue(BacklogStatus.CREATED);
                 b.Property(i => i.Priority).HasDefaultValue(Priority.NONE);
-                b.Property(i => i.Created).HasDefaultValueSql("getdate()");
-                b.Property(i => i.LastUpdated).HasDefaultValueSql("getdate()");
+                b.Property(i => i.Created).HasDefaultValueSql("getutcdate()");
+                b.Property(i => i.LastUpdated).HasDefaultValueSql("getutcdate()");
             });
 
             modelBuilder.Entity<BacklogTaskSchedule>(b =>

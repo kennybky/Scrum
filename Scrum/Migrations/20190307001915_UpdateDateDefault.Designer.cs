@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Scrum.Data;
 
 namespace Scrum.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190307001915_UpdateDateDefault")]
+    partial class UpdateDateDefault
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -201,14 +203,14 @@ namespace Scrum.Migrations
 
                     b.Property<DateTime>("Created")
                         .ValueGeneratedOnAdd()
-                        .HasDefaultValueSql("getutcdate()");
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<string>("Description")
                         .IsRequired();
 
                     b.Property<DateTime>("LastUpdated")
                         .ValueGeneratedOnAdd()
-                        .HasDefaultValueSql("getutcdate()");
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<int>("Priority")
                         .ValueGeneratedOnAdd()
