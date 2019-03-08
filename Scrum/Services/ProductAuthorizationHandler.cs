@@ -37,7 +37,7 @@ namespace Scrum.Services
                 context.Fail();
                 return;
             }
-            if (requirement.Name == ProductOperations.ViewBacklog.Name)
+            if (requirement.Name == Operations.View.Name)
             {
                 await CanViewBacklog(context, requirement, resource);
             }
@@ -46,35 +46,33 @@ namespace Scrum.Services
        
         private async Task CanViewBacklog(AuthorizationHandlerContext context, OperationAuthorizationRequirement requirement, Product resource)
         {
-           
-                var ProductTeam = await _dbContext.ProductTeams.Where(pt => pt.ProductId == resource.Id).ToListAsync();
-                var UserTeam = await _dbContext.ScrumUserTeams.Where(ut => ut.UserId == User.Id).ToListAsync();
-                foreach (var team in UserTeam)
+
+            var _IsInProductTeam = await IsInProductTeam(resource);
+            if (_IsInProductTeam)
+            {
+                context.Succeed(requirement);
+            }
+
+        }
+
+
+        private async Task<bool> IsInProductTeam(Product resource)
+        {
+            var ProductTeam = await _dbContext.ProductTeams.Where(pt => pt.ProductId == resource.Id).ToListAsync();
+            var UserTeam = await _dbContext.ScrumUserTeams.Where(ut => ut.UserId == User.Id).ToListAsync();
+            foreach (var team in UserTeam)
+            {
+                var product = ProductTeam.Find(pt => pt.TeamId == team.TeamId);
+                if (product != null)
                 {
-                    var product = ProductTeam.Find(pt => pt.TeamId == team.TeamId);
-                    if ( product != null)
-                    {
-                        context.Succeed(requirement);
-                    return;
-                    }
+                    return true;
                 }
-               
+            }
+            return false;
         }
 
-        }
-      
 
-
-
-    #region ProductOperations
-
-    public static class ProductOperations
-    {
-        public static OperationAuthorizationRequirement Manage = new OperationAuthorizationRequirement { Name = nameof(Manage) };
-        public static OperationAuthorizationRequirement Update = new OperationAuthorizationRequirement { Name = nameof(Update) };
-        public static OperationAuthorizationRequirement ViewBacklog = new OperationAuthorizationRequirement { Name = nameof(ViewBacklog) };
 
     }
-
-    #endregion
+     
 }

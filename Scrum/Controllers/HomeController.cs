@@ -64,7 +64,7 @@ namespace Scrum.Controllers
                return RedirectToAction("Error");
             var User = HttpContext.User;
             
-            var authorization = await _authorizationService.AuthorizeAsync(User, Product, ProductOperations.Manage);
+            var authorization = await _authorizationService.AuthorizeAsync(User, Product, Operations.Manage);
             if (authorization.Succeeded)
             {
                 return RedirectToAction("About");

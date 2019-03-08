@@ -12,75 +12,74 @@ using Scrum.Services;
 namespace Scrum.Controllers
 {
     [Authorize]
-    public class ProductsController : Controller
+    public class ScrumTeamsController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly IAuthorizationService _authorizationService;
 
-        public ProductsController(ApplicationDbContext context, IAuthorizationService authorizationService)
+
+        public ScrumTeamsController(ApplicationDbContext context, IAuthorizationService authorizationService)
         {
             _context = context;
             _authorizationService = authorizationService;
         }
 
-        // GET: Products
+        // GET: ScrumTeams
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Products.ToListAsync());
+            return View(await _context.ScrumTeams.ToListAsync());
         }
 
-        // GET: Products/Details/5
-        
+        // GET: ScrumTeams/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-
-            var product = await _context.Products.Include(p=> p.ProductManager)
-                .Include(p=>p.ProductTeams).FirstOrDefaultAsync(m => m.Id == id);
-            if (product == null)
+            var scrumTeam = await _context.ScrumTeams.Include(t => t.ScrumMaster).Include(t=> t.SprintBackLog).Include(t => t.ProductTeams).ThenInclude(pt=> pt.Product)
+               .FirstOrDefaultAsync(m => m.Id == id);
+            if (scrumTeam == null)
             {
                 return NotFound();
             }
 
-            return View(product);
+            var allowed = await _authorizationService.AuthorizeAsync(User, scrumTeam, Operations.View);
+            if (!allowed.Succeeded)
+            {
+                return new ForbidResult();
+            }
+           
+
+            return View(scrumTeam);
         }
 
-       
-
-
-
-       
-
-        // GET: Products/Create
-        [Authorize(Roles = Roles.Admin)]
+        [Authorize(Roles=Roles.Admin)]
+        // GET: ScrumTeams/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Products/Create
+        // POST: ScrumTeams/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = Roles.Admin)]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,ProductPriority,ProductStatus")] Product product)
+        public async Task<IActionResult> Create([Bind("Id,TeamName")] ScrumTeam scrumTeam)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(product);
+                _context.Add(scrumTeam);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(product);
+            return View(scrumTeam);
         }
 
-        // GET: Products/Edit/5
-
         [Authorize(Roles = Roles.Admin)]
+        // GET: ScrumTeams/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -88,24 +87,23 @@ namespace Scrum.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Products.FindAsync(id);
-            if (product == null)
+            var scrumTeam = await _context.ScrumTeams.FindAsync(id);
+            if (scrumTeam == null)
             {
                 return NotFound();
             }
-            return View(product);
+            return View(scrumTeam);
         }
 
-        // POST: Products/Edit/5
+        // POST: ScrumTeams/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-
         [Authorize(Roles = Roles.Admin)]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,ProductPriority,ProductStatus")] Product product)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,TeamName")] ScrumTeam scrumTeam)
         {
-            if (id != product.Id)
+            if (id != scrumTeam.Id)
             {
                 return NotFound();
             }
@@ -114,12 +112,12 @@ namespace Scrum.Controllers
             {
                 try
                 {
-                    _context.Update(product);
+                    _context.Update(scrumTeam);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProductExists(product.Id))
+                    if (!ScrumTeamExists(scrumTeam.Id))
                     {
                         return NotFound();
                     }
@@ -130,11 +128,10 @@ namespace Scrum.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(product);
+            return View(scrumTeam);
         }
 
-        // GET: Products/Delete/5
-
+        // GET: ScrumTeams/Delete/5
         [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> Delete(int? id)
         {
@@ -143,32 +140,31 @@ namespace Scrum.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Products
+            var scrumTeam = await _context.ScrumTeams
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (product == null)
+            if (scrumTeam == null)
             {
                 return NotFound();
             }
 
-            return View(product);
+            return View(scrumTeam);
         }
 
-        // POST: Products/Delete/5
+        // POST: ScrumTeams/Delete/5
+        [Authorize(Roles = Roles.Admin)]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-
-        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var product = await _context.Products.FindAsync(id);
-            _context.Products.Remove(product);
+            var scrumTeam = await _context.ScrumTeams.FindAsync(id);
+            _context.ScrumTeams.Remove(scrumTeam);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ProductExists(int id)
+        private bool ScrumTeamExists(int id)
         {
-            return _context.Products.Any(e => e.Id == id);
+            return _context.ScrumTeams.Any(e => e.Id == id);
         }
     }
 }

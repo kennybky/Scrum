@@ -62,7 +62,7 @@ namespace Scrum.Data
         [Required]
         public string Description { get; set; }
 
-        public virtual BacklogTaskSchedule Schedule { get; set; }
+        public virtual ICollection<BacklogTaskSchedule> Schedule { get; set; }
     }
 
     public class BacklogTaskSchedule

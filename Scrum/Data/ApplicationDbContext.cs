@@ -62,6 +62,12 @@ namespace Scrum.Data
             modelBuilder.Entity<BacklogTaskSchedule>(b =>
             {
                 b.HasKey(s => new { s.BackLogTaskId, s.Day });
+                b.HasOne(s => s.Task).WithMany(t => t.Schedule);
+            });
+
+            modelBuilder.Entity<BacklogUpdate>(b =>
+            {
+                b.HasIndex(u => u.UpdateTime);
             });
 
             modelBuilder.Entity<ScrumUserTeam>(b =>

@@ -12,21 +12,23 @@ using Scrum.Services;
 
 namespace Scrum.Controllers
 {
+
     [Authorize]
-    [Route("Products/backlog/{productid:int}/[action]/{id:int?}")]
-    public class ProductBacklogController : Controller
+    [Route("Products/backlogtask/{backlogid:int}/[action]/{id:int?}")]
+    public class BacklogTasksController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly IAuthorizationService _authorizationService;
-        private Product Product;
 
+        private readonly IAuthorizationService _authorizationService;
+
+        private ProductBacklogItem BacklogItem;
 
         public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            int id = int.Parse(context.RouteData.Values["productid"].ToString());
-            Product = await _context.Products.Include(p => p.ProductManager)
-                .Include(p => p.ProductBacklog).FirstOrDefaultAsync(p => p.Id == id);
-            if (Product == null)
+            int id = int.Parse(context.RouteData.Values["backlogid"].ToString());
+            BacklogItem = await _context.ProductBackLogItems.Include(p => p.Team).ThenInclude(t => t.UserTeams)
+                .Include(p => p.Tasks).FirstOrDefaultAsync(p => p.Id == id);
+            if (BacklogItem == null)
             {
                 context.Result = new NotFoundResult();
                 return;
@@ -37,116 +39,116 @@ namespace Scrum.Controllers
             }
         }
 
-        public ProductBacklogController(ApplicationDbContext context, IAuthorizationService authorizationService)
+        public BacklogTasksController(ApplicationDbContext context, IAuthorizationService authorizationService)
         {
             _context = context;
             _authorizationService = authorizationService;
         }
 
-        // GET: Product/Backlog/1/index
+        // GET: BacklogTasks
         public async Task<IActionResult> Index()
         {
-            var allowed = await _authorizationService.AuthorizeAsync(User, Product, Operations.View);
+            var allowed = await _authorizationService.AuthorizeAsync(User, BacklogItem, Operations.View);
             if (!allowed.Succeeded)
             {
                 return new ForbidResult();
             }
-            return View(Product.ProductBacklog);
+            return View(BacklogItem.Tasks);
         }
 
-        // GET: Product/Backlog/2/Details/5
+        // GET: BacklogTasks/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-            var productBacklogItem = await _context.ProductBackLogItems
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (productBacklogItem == null)
-            {
-                return NotFound();
-            }
 
-            var allowed = await _authorizationService.AuthorizeAsync(User, productBacklogItem, Operations.View);
+            var allowed = await _authorizationService.AuthorizeAsync(User, BacklogItem, Operations.View);
             if (!allowed.Succeeded)
             {
                 return new ForbidResult();
             }
-            
 
-            return View(productBacklogItem);
+            var backlogTask = await _context.BacklogTasks
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (backlogTask == null)
+            {
+                return NotFound();
+            }
+
+            return View(backlogTask);
         }
 
-        // GET: Products/Backlog/5/Create
+        // GET: BacklogTasks/Create
         public async Task<IActionResult> Create()
         {
-            var allowed = await _authorizationService.AuthorizeAsync(User, Product, Operations.Create);
-            if(!allowed.Succeeded)
+            var allowed = await _authorizationService.AuthorizeAsync(User, BacklogItem, Operations.Update);
+            if (!allowed.Succeeded)
             {
                 return new ForbidResult();
             }
             return View();
         }
 
-        // POST: Products/Backlog/5/Create
+        // POST: BacklogTasks/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Description,Priority,Status")] ProductBacklogItem productBacklogItem)
+        public async Task<IActionResult> Create([Bind("Id,Description")] BacklogTask backlogTask)
         {
-            var allowed = await _authorizationService.AuthorizeAsync(User, Product, Operations.Create);
+            var allowed = await _authorizationService.AuthorizeAsync(User, BacklogItem, Operations.Update);
             if (!allowed.Succeeded)
             {
                 return new ForbidResult();
             }
-
             if (ModelState.IsValid)
             {
-                _context.Add(productBacklogItem);
+                _context.Add(backlogTask);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(productBacklogItem);
+            return View(backlogTask);
         }
 
-        // GET: Product/Backlog/1/Edit/5
+        // GET: BacklogTasks/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-
-            var allowed = await _authorizationService.AuthorizeAsync(User, Product, Operations.Manage);
-            if (!allowed.Succeeded)
-            {
-                return new ForbidResult();
-            }
-
             if (id == null)
             {
                 return NotFound();
             }
 
-            var productBacklogItem = await _context.ProductBackLogItems.FindAsync(id);
-            if (productBacklogItem == null)
+
+            var allowed = await _authorizationService.AuthorizeAsync(User, BacklogItem, Operations.Update);
+            if (!allowed.Succeeded)
+            {
+                return new ForbidResult();
+            }
+
+            var backlogTask = await _context.BacklogTasks.FindAsync(id);
+            if (backlogTask == null)
             {
                 return NotFound();
             }
-            return View(productBacklogItem);
+            return View(backlogTask);
         }
 
-        // POST: Product/Backlog/5/Edit/5
+        // POST: BacklogTasks/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Description,Priority,Status")] ProductBacklogItem productBacklogItem)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Description")] BacklogTask backlogTask)
         {
-            if (id != productBacklogItem.Id)
+            if (id != backlogTask.Id)
             {
                 return NotFound();
             }
 
-            var allowed = await _authorizationService.AuthorizeAsync(User, Product, Operations.Manage);
+
+            var allowed = await _authorizationService.AuthorizeAsync(User, BacklogItem, Operations.Update);
             if (!allowed.Succeeded)
             {
                 return new ForbidResult();
@@ -156,12 +158,12 @@ namespace Scrum.Controllers
             {
                 try
                 {
-                    _context.Update(productBacklogItem);
+                    _context.Update(backlogTask);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProductBacklogItemExists(productBacklogItem.Id))
+                    if (!BacklogTaskExists(backlogTask.Id))
                     {
                         return NotFound();
                     }
@@ -172,10 +174,10 @@ namespace Scrum.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(productBacklogItem);
+            return View(backlogTask);
         }
 
-        // GET: Product/Backlog/3/Delete/5
+        // GET: BacklogTasks/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -183,35 +185,45 @@ namespace Scrum.Controllers
                 return NotFound();
             }
 
-            var productBacklogItem = await _context.ProductBackLogItems
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (productBacklogItem == null)
-            {
-                return NotFound();
-            }
 
-            return View(productBacklogItem);
-        }
-
-        // POST: Product/Backlog/3/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var allowed = await _authorizationService.AuthorizeAsync(User, Product, Operations.Delete);
+            var allowed = await _authorizationService.AuthorizeAsync(User, BacklogItem, Operations.Update);
             if (!allowed.Succeeded)
             {
                 return new ForbidResult();
             }
-            var productBacklogItem = await _context.ProductBackLogItems.FindAsync(id);
-            _context.ProductBackLogItems.Remove(productBacklogItem);
+
+            var backlogTask = await _context.BacklogTasks
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (backlogTask == null)
+            {
+                return NotFound();
+            }
+
+            return View(backlogTask);
+        }
+
+        // POST: BacklogTasks/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+
+
+            var allowed = await _authorizationService.AuthorizeAsync(User, BacklogItem, Operations.Update);
+            if (!allowed.Succeeded)
+            {
+                return new ForbidResult();
+            }
+
+            var backlogTask = await _context.BacklogTasks.FindAsync(id);
+            _context.BacklogTasks.Remove(backlogTask);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ProductBacklogItemExists(int id)
+        private bool BacklogTaskExists(int id)
         {
-            return _context.ProductBackLogItems.Any(e => e.Id == id);
+            return _context.BacklogTasks.Any(e => e.Id == id);
         }
     }
 }

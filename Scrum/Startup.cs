@@ -48,6 +48,7 @@ namespace Scrum
             services.AddScoped<ProductRepository>();
 
             services.AddScoped<IAuthorizationHandler, ProductAuthorizationHandler>();
+            services.AddScoped<IAuthorizationHandler, BacklogItemAuthorizationHandler>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
