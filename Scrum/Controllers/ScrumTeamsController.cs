@@ -14,11 +14,11 @@ namespace Scrum.Controllers
     [Authorize]
     public class ScrumTeamsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ScrumContext _context;
         private readonly IAuthorizationService _authorizationService;
 
 
-        public ScrumTeamsController(ApplicationDbContext context, IAuthorizationService authorizationService)
+        public ScrumTeamsController(ScrumContext context, IAuthorizationService authorizationService)
         {
             _context = context;
             _authorizationService = authorizationService;

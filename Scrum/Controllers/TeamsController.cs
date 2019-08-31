@@ -11,9 +11,9 @@ namespace Scrum.Controllers
 {
     public class TeamsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ScrumContext _context;
 
-        public TeamsController(ApplicationDbContext context)
+        public TeamsController(ScrumContext context)
         {
             _context = context;
         }

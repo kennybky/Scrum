@@ -13,9 +13,9 @@ namespace Scrum.Controllers
     [Authorize(Roles = Roles.Admin)]
     public class ProductTeamsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ScrumContext _context;
 
-        public ProductTeamsController(ApplicationDbContext context)
+        public ProductTeamsController(ScrumContext context)
         {
             _context = context;
         }

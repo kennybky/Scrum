@@ -8,14 +8,14 @@ using Scrum.Data;
 
 namespace Scrum.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(ScrumContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.4-rtm-31024")
+                .HasAnnotation("ProductVersion", "2.2.2-servicing-10034")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -146,8 +146,10 @@ namespace Scrum.Migrations
 
                     b.Property<int>("UpdatePersonId");
 
-                    b.Property<DateTime>("UpdateTime")
-                        .ValueGeneratedOnAdd();
+                    b.Property<DateTime?>("UpdateTime")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("getutcdate()");
 
                     b.HasKey("Id");
 
@@ -174,13 +176,15 @@ namespace Scrum.Migrations
 
                     b.Property<int?>("ProductManagerId");
 
-                    b.Property<int>("ProductPriority")
+                    b.Property<string>("ProductPriority")
+                        .IsRequired()
                         .ValueGeneratedOnAdd()
-                        .HasDefaultValue(0);
+                        .HasDefaultValue("NONE");
 
-                    b.Property<int>("ProductStatus")
+                    b.Property<string>("ProductStatus")
+                        .IsRequired()
                         .ValueGeneratedOnAdd()
-                        .HasDefaultValue(0);
+                        .HasDefaultValue("CONCEPTUALIZED");
 
                     b.HasKey("Id");
 
@@ -198,26 +202,30 @@ namespace Scrum.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("Created")
+                    b.Property<DateTime?>("Created")
+                        .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasDefaultValueSql("getutcdate()");
 
                     b.Property<string>("Description")
                         .IsRequired();
 
-                    b.Property<DateTime>("LastUpdated")
+                    b.Property<DateTime?>("LastUpdated")
+                        .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasDefaultValueSql("getutcdate()");
 
-                    b.Property<int>("Priority")
+                    b.Property<string>("Priority")
+                        .IsRequired()
                         .ValueGeneratedOnAdd()
-                        .HasDefaultValue(0);
+                        .HasDefaultValue("NONE");
 
                     b.Property<int>("ProductId");
 
-                    b.Property<int>("Status")
+                    b.Property<string>("Status")
+                        .IsRequired()
                         .ValueGeneratedOnAdd()
-                        .HasDefaultValue(0);
+                        .HasDefaultValue("CREATED");
 
                     b.Property<int?>("TeamId");
 

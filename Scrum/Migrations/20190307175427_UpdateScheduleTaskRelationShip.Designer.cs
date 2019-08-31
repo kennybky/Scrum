@@ -9,7 +9,7 @@ using Scrum.Data;
 
 namespace Scrum.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(ScrumContext))]
     [Migration("20190307175427_UpdateScheduleTaskRelationShip")]
     partial class UpdateScheduleTaskRelationShip
     {

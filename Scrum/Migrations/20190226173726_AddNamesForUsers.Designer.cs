@@ -9,7 +9,7 @@ using Scrum.Data;
 
 namespace Scrum.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(ScrumContext))]
     [Migration("20190226173726_AddNamesForUsers")]
     partial class AddNamesForUsers
     {

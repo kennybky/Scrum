@@ -37,11 +37,11 @@ namespace Scrum
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddDbContext<ApplicationDbContext>(options =>
+            services.AddDbContext<ScrumContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddIdentity<ScrumUser, ScrumRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultUI().AddDefaultTokenProviders();
+                .AddEntityFrameworkStores<ScrumContext>().AddDefaultUI().AddDefaultTokenProviders();
 
             
             services.AddScoped<UserRepository>();
@@ -153,7 +153,7 @@ namespace Scrum
                         ProductManager = janeuser
                     };
 
-                    var context = serviceProvider.GetService<ApplicationDbContext>();
+                    var context = serviceProvider.GetService<ScrumContext>();
                     context.Products.Add(product);
                     context.SaveChanges();
                 } else
@@ -163,7 +163,7 @@ namespace Scrum
             } else
             {
 
-                var context = serviceProvider.GetService<ApplicationDbContext>();
+                var context = serviceProvider.GetService<ScrumContext>();
                 var team = new ScrumTeam()
                 {
                     TeamName = "Sample Team"

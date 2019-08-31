@@ -9,10 +9,10 @@ namespace Scrum.Repositories
 {
     public class UserRepository : IRepository<ScrumUser>
     {
-        private readonly ApplicationDbContext _dbContext;
+        private readonly ScrumContext _dbContext;
         private readonly UserManager<ScrumUser> _userManager;
 
-        public UserRepository(ApplicationDbContext dbContext, UserManager<ScrumUser> userManager)
+        public UserRepository(ScrumContext dbContext, UserManager<ScrumUser> userManager)
         {
             _dbContext = dbContext;
             _userManager = userManager;

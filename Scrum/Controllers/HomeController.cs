@@ -18,8 +18,8 @@ namespace Scrum.Controllers
 
         private readonly IAuthorizationService _authorizationService;
 
-        private readonly ApplicationDbContext _dbContext;
-        public HomeController(IAuthorizationService authorizationService, ApplicationDbContext dbContext)
+        private readonly ScrumContext _dbContext;
+        public HomeController(IAuthorizationService authorizationService, ScrumContext dbContext)
         {
             _authorizationService = authorizationService;
             _dbContext = dbContext;

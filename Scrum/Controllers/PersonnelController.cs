@@ -16,9 +16,9 @@ namespace Scrum.Controllers
     public class PersonnelController : Controller
     {
 
-        private readonly ApplicationDbContext _context;
+        private readonly ScrumContext _context;
 
-        public PersonnelController(ApplicationDbContext context)
+        public PersonnelController(ScrumContext context)
         {
             _context = context;
         }

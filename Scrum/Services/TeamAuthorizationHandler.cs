@@ -12,13 +12,13 @@ namespace Scrum.Services
     public class TeamAuthorizationHandler : AuthorizationHandler<OperationAuthorizationRequirement, ScrumTeam>
     {
 
-        public TeamAuthorizationHandler(ApplicationDbContext dbContext)
+        public TeamAuthorizationHandler(ScrumContext dbContext)
         {
             _dbContext = dbContext;
         }
 
         private ScrumUser User;
-        private ApplicationDbContext _dbContext;
+        private ScrumContext _dbContext;
 
         protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, OperationAuthorizationRequirement requirement, ScrumTeam resource)
         {

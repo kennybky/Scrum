@@ -9,7 +9,7 @@ using Scrum.Data;
 
 namespace Scrum.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(ScrumContext))]
     [Migration("20190226162351_EditRoles")]
     partial class EditRoles
     {

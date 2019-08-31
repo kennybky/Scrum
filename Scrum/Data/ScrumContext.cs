@@ -4,10 +4,11 @@ using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Scrum.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<ScrumUser, ScrumRole, int>
+    public class ScrumContext : IdentityDbContext<ScrumUser, ScrumRole, int>
     {
 
         public DbSet<ScrumTeam> ScrumTeams { get; set; }
@@ -24,19 +25,39 @@ namespace Scrum.Data
 
         public DbSet<BacklogUpdate> BacklogUpdates { get; set; }
 
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        public ScrumContext(DbContextOptions<ScrumContext> options)
             : base(options)
         {
+           
         }
+
+        
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            var PriorityConverter = new ValueConverter<Priority, string>(
+            v => v.ToString(),
+            v => (Priority)Enum.Parse(typeof(Priority), v));
+
+            var ProductStatusConverter = new ValueConverter<ProductStatus, string>(
+            v => v.ToString(),
+            v => (ProductStatus)Enum.Parse(typeof(ProductStatus), v));
+
+            var BacklogStatusConverter = new ValueConverter<BacklogStatus, string>(
+            v => v.ToString(),
+            v => (BacklogStatus)Enum.Parse(typeof(BacklogStatus), v));
+
             modelBuilder.Entity<ScrumUser>(b =>
             {
                 b.ToTable("ScrumUsers");
                
             });
+
+          
+
+            
 
             modelBuilder.Entity<ScrumTeam>(b =>
             {
@@ -47,16 +68,21 @@ namespace Scrum.Data
             modelBuilder.Entity<Product>(b =>
             {
                 b.HasIndex(pp => pp.Name).IsUnique();
-                b.Property(p => p.ProductPriority).HasDefaultValue(Priority.NONE);
-                b.Property(p => p.ProductStatus).HasDefaultValue(ProductStatus.CONCEPTUALIZED);
+                b.Property(p => p.ProductPriority).HasDefaultValue(Priority.NONE)
+                .HasConversion(PriorityConverter);
+                b.Property(p => p.ProductStatus).HasDefaultValue(ProductStatus.CONCEPTUALIZED)
+                .HasConversion(ProductStatusConverter);
             });
 
             modelBuilder.Entity<ProductBacklogItem>(b =>
             {
-                b.Property(i => i.Status).HasDefaultValue(BacklogStatus.CREATED);
-                b.Property(i => i.Priority).HasDefaultValue(Priority.NONE);
-                b.Property(i => i.Created).HasDefaultValueSql("getutcdate()");
-                b.Property(i => i.LastUpdated).HasDefaultValueSql("getutcdate()");
+                b.Property(i => i.Status).HasDefaultValue(BacklogStatus.CREATED)
+                .HasConversion(BacklogStatusConverter);
+                b.Property(i => i.Priority).HasDefaultValue(Priority.NONE)
+                .HasConversion(PriorityConverter); ;
+                b.Property(i => i.Created).HasDefaultValueSql("getutcdate()").IsRequired();
+                b.Property(i => i.LastUpdated).HasDefaultValueSql("getutcdate()").IsRequired();
+                
             });
 
             modelBuilder.Entity<BacklogTaskSchedule>(b =>
@@ -68,6 +94,8 @@ namespace Scrum.Data
             modelBuilder.Entity<BacklogUpdate>(b =>
             {
                 b.HasIndex(u => u.UpdateTime);
+                b.Property(u => u.UpdateTime).HasDefaultValueSql("getutcdate()").IsRequired();
+              
             });
 
             modelBuilder.Entity<ScrumUserTeam>(b =>
@@ -116,6 +144,8 @@ namespace Scrum.Data
             {
                 b.ToTable("ScrumUserRoles");
             });
+
+           
         }
     }
 }

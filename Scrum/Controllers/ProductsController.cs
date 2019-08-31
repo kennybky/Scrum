@@ -14,10 +14,10 @@ namespace Scrum.Controllers
     [Authorize]
     public class ProductsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ScrumContext _context;
         private readonly IAuthorizationService _authorizationService;
 
-        public ProductsController(ApplicationDbContext context, IAuthorizationService authorizationService)
+        public ProductsController(ScrumContext context, IAuthorizationService authorizationService)
         {
             _context = context;
             _authorizationService = authorizationService;

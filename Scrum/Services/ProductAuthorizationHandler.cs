@@ -17,9 +17,9 @@ namespace Scrum.Services
 {
     public class ProductAuthorizationHandler : AuthorizationHandler<OperationAuthorizationRequirement, Product>
     {
-        private readonly ApplicationDbContext _dbContext;
+        private readonly ScrumContext _dbContext;
         private ScrumUser User;
-        public ProductAuthorizationHandler(ApplicationDbContext dbContext)
+        public ProductAuthorizationHandler(ScrumContext dbContext)
         {
             _dbContext = dbContext;
         }

@@ -17,7 +17,7 @@ namespace Scrum.Controllers
     [Route("Products/backlogtask/{backlogid:int}/[action]/{id:int?}")]
     public class BacklogTasksController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ScrumContext _context;
 
         private readonly IAuthorizationService _authorizationService;
 
@@ -39,7 +39,7 @@ namespace Scrum.Controllers
             }
         }
 
-        public BacklogTasksController(ApplicationDbContext context, IAuthorizationService authorizationService)
+        public BacklogTasksController(ScrumContext context, IAuthorizationService authorizationService)
         {
             _context = context;
             _authorizationService = authorizationService;

@@ -31,12 +31,11 @@ namespace Scrum.Data
         [Required]
         public string Description { get; set; }
 
-        [Required]
-        public DateTime LastUpdated { get; set; }
+        
+        public DateTime? LastUpdated { get; set; }
 
-        [Required]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public DateTime Created { get; set; }
+        
+        public DateTime? Created { get; set; }
 
         [Required]
         public Priority Priority { get; set; }
@@ -74,6 +73,7 @@ namespace Scrum.Data
         
         public BacklogTask Task { get; set; }
 
+        [Required]
         public DateTime Day { get; set; }
 
         [Required]
@@ -97,8 +97,8 @@ namespace Scrum.Data
         public ScrumUser UpdatePerson { get; set; }
 
         
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public DateTime UpdateTime { get; set; }
+        
+        public DateTime? UpdateTime { get; set; }
     }
 
 

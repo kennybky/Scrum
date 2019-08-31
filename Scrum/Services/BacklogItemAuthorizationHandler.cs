@@ -10,10 +10,10 @@ namespace Scrum.Services
 {
     public class BacklogItemAuthorizationHandler : AuthorizationHandler<OperationAuthorizationRequirement, ProductBacklogItem>
     {
-        private readonly ApplicationDbContext _dbContext;
+        private readonly ScrumContext _dbContext;
         private ScrumUser User;
         private ProductBacklogItem BacklogItem;
-        public BacklogItemAuthorizationHandler(ApplicationDbContext dbContext)
+        public BacklogItemAuthorizationHandler(ScrumContext dbContext)
         {
             _dbContext = dbContext;
         }
